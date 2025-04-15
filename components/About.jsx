@@ -42,10 +42,10 @@ const About = () => {
                     transition={{ duration: 0.6, delay: 0.8 }}
                     className="flex-1">
                     <p className="mb-10 max-w-2xl">
-                        I am an experience Backend Engineer with over a decade
-                        of professional expertise in the field. Throughout my career,
-                        I have had the privilege of collaborating with prestigious
-                        organizations, contributing to their success and growth.
+                        I’m a passionate Backend Engineer with solid experience in building
+                        and maintaining reliable backend systems. Over the years,
+                        I’ve had the opportunity to collaborate with amazing teams and reputable companies,
+                        helping them grow and succeed through well-structured and scalable solutions.
                     </p>
 
                     <motion.ul
