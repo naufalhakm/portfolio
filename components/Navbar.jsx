@@ -1,80 +1,151 @@
-import { assets } from '@/assets/assets'
-import Image from 'next/image'
-import React, { useEffect, useRef, useState } from 'react'
+'use client';
 
-const Navbar = () => {
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import MagneticButton from './MagneticButton';
 
-    const [isScroll, setIsScroll] = useState(false)
-    const sideMenuRef = useRef();
+const navLinks = ['Work', 'About', 'Contact'];
 
-    const openMenu = () => {
-        sideMenuRef.current.style.transform = 'translateX(0rem)'
-    }
+export default function Navbar() {
+  const [open, setOpen] = useState(false);
 
-    const closeMenu = () => {
-        sideMenuRef.current.style.transform = 'translateX(16rem)'
-    }
+  const go = (id) => {
+    setOpen(false);
+    document.getElementById(id.toLowerCase())?.scrollIntoView({ behavior: 'smooth' });
+  };
 
-    useEffect(() => {
-        window.addEventListener('scroll', () => {
-            if (scrollY > 50) {
-                setIsScroll(true)
-            } else {
-                setIsScroll(false)
-            }
-        })
-    }, [])
+  return (
+    <>
+      {/* Header — fully transparent, text uses mix-blend-mode for auto contrast */}
+      <motion.header
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 2.8, duration: 0.9, ease: [0.76, 0, 0.24, 1] }}
+        className="fixed top-0 left-0 right-0 z-[100]"
+        style={{
+          backgroundColor: 'transparent',
+          mixBlendMode: 'difference',
+        }}
+      >
+        <div className="flex items-center justify-between" style={{ padding: '28px 48px' }}>
+          {/* Logo */}
+          <MagneticButton strength={0.2}>
+            <button
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              style={{
+                fontFamily: 'var(--font-syne)',
+                color: '#ffffff',
+                fontSize: '20px',
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+                fontWeight: 700,
+              }}
+            >
+              Naufal<span style={{ color: '#ffffff' }}>.</span>
+            </button>
+          </MagneticButton>
 
-    return (
-        <>
+          {/* Desktop links */}
+          <nav className="hidden md:flex items-center" style={{ gap: '48px' }}>
+            {navLinks.map(link => (
+              <MagneticButton key={link} strength={0.3}>
+                <button
+                  onClick={() => go(link)}
+                  style={{
+                    fontFamily: 'var(--font-syne)',
+                    color: '#ffffff',
+                    fontSize: '13px',
+                    letterSpacing: '0.18em',
+                    textTransform: 'uppercase',
+                    fontWeight: 500,
+                    opacity: 0.7,
+                  }}
+                >
+                  {link}
+                </button>
+              </MagneticButton>
+            ))}
 
-            <div className='fixed top-0 right-0 w-11/12 -z-10 translate-y-[-80%]'>
-                <Image src={assets.header_bg_color} alt='' className='w-full' />
-            </div>
-            <nav className={`w-full fixed px-5 lg:px-8 xl:px-[8%] py-4 flex items-center justify-between z-50 ${isScroll ? "bg-white/30 backdrop-blur-lg shadow-sm" : ""}`}>
-                <a href="#top">
-                    <Image src={assets.logo} alt="" className='w-35
-                cursor-pointer mr-14'/>
-                </a>
+            {/* CTA */}
+            <MagneticButton strength={0.25}>
+              <a
+                href="#contact"
+                style={{
+                  fontFamily: 'var(--font-syne)',
+                  border: '1.5px solid #ffffff',
+                  color: '#ffffff',
+                  borderRadius: '999px',
+                  padding: '12px 32px',
+                  fontSize: '12px',
+                  letterSpacing: '0.15em',
+                  textTransform: 'uppercase',
+                  fontWeight: 600,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                }}
+              >
+                Let's Talk
+              </a>
+            </MagneticButton>
+          </nav>
 
-                <ul className={`hidden md:flex items-center gap-6 lg:gap-8 
-                    rounded-full px-12 py-3 ${isScroll ? "" : "bg-white shadow-sm bg-opcity-50"}`}>
-                    <li><a className='font-ovo' href="#top">Home</a></li>
-                    <li><a className='font-ovo' href="#about">About me</a></li>
-                    <li><a className='font-Ovo' href="#work">My Work</a></li>
-                    <li><a className='font-Ovo' href="#contact">Contact me</a></li>
-                </ul>
+          {/* Hamburger */}
+          <MagneticButton strength={0.4}>
+            <button onClick={() => setOpen(!open)}
+              className="flex flex-col justify-center items-end gap-[6px] w-10 h-10 md:hidden"
+              aria-label="Menu">
+              <motion.span animate={open ? { rotate: 45, y: 8, width: '28px' } : { rotate: 0, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className="block h-[2px] origin-center"
+                style={{ width: '28px', backgroundColor: '#ffffff' }} />
+              <motion.span animate={open ? { opacity: 0 } : { opacity: 1 }}
+                transition={{ duration: 0.2 }}
+                className="block h-[2px]"
+                style={{ width: '20px', backgroundColor: '#ffffff' }} />
+              <motion.span animate={open ? { rotate: -45, y: -8, width: '28px' } : { rotate: 0, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className="block h-[2px] origin-center"
+                style={{ width: '24px', backgroundColor: '#ffffff' }} />
+            </button>
+          </MagneticButton>
+        </div>
+      </motion.header>
 
-                <div className='flex items-center gap-4'>
-
-                    {/* <button>
-                        <Image src={assets.moon_icon} alt='' className='w-6' />
-                    </button> */}
-                    <a href="#contact" className='hidden lg:flex items-center gap-3 px-10 
-                    py-2.5 border border-gray-500 rounded-full ml-4 font-Ovo'>Contact <Image src={assets.arrow_icon} alt="" className='w-3' /></a>
-                    <button className='block md:hidden ml-3' onClick={openMenu}>
-                        <Image src={assets.menu_black} alt='' className='w-6' />
-                    </button>
-                </div>
-
-                {/* ------ mobile menu------- */}
-
-                <ul ref={sideMenuRef} className='flex md:hidden flex-col gap-4 py-20 px-10 fixed -right-0 top-0 bottom-0 w-64 z-50 h-screen bg-rose-50 duration-500'>
-
-
-                    <div className='absolute right-6 top-6' onClick={closeMenu}>
-                        <Image src={assets.close_black} alt='' className='w-5 cursor-pointer' />
-                    </div>
-
-                    <li><a className='font-ovo' onClick={closeMenu} href="#top">Home</a></li>
-                    <li><a className='font-ovo' onClick={closeMenu} href="#about">About me</a></li>
-                    <li><a className='font-Ovo' onClick={closeMenu} href="#work">My Work</a></li>
-                    <li><a className='font-Ovo' onClick={closeMenu} href="#contact">Contact me</a></li>
-                </ul>
-
-            </nav>
-        </>
-    )
+      {/* Mobile menu */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ clipPath: 'inset(0 0 100% 0)' }}
+            animate={{ clipPath: 'inset(0 0 0% 0)' }}
+            exit={{ clipPath: 'inset(0 0 100% 0)' }}
+            transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
+            className="fixed inset-0 z-[99] flex flex-col justify-center items-center gap-10"
+            style={{ backgroundColor: '#1a1a14' }}
+          >
+            {navLinks.map((link, i) => (
+              <motion.div key={link}
+                initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
+                exit={{ y: 30, opacity: 0 }}
+                transition={{ delay: 0.1 + i * 0.08, duration: 0.5 }}>
+                <button onClick={() => go(link)}
+                  className="text-[clamp(2.5rem,9vw,5rem)] font-bold leading-none transition-colors duration-300"
+                  style={{ fontFamily: 'var(--font-syne)', color: '#f5f0e8' }}
+                  onMouseEnter={e => e.currentTarget.style.color = '#d4522a'}
+                  onMouseLeave={e => e.currentTarget.style.color = '#f5f0e8'}>
+                  {link}
+                </button>
+              </motion.div>
+            ))}
+            <motion.p
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+              transition={{ delay: 0.5, duration: 0.4 }}
+              className="absolute bottom-10 text-xs tracking-[0.25em] uppercase"
+              style={{ fontFamily: 'var(--font-syne)', color: '#6b6554' }}>
+              © {new Date().getFullYear()} Naufal Hakim
+            </motion.p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
 }
-
-export default Navbar

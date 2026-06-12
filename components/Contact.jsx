@@ -1,109 +1,152 @@
-import { assets } from '@/assets/assets'
-import Image from 'next/image'
-import React, { useState } from 'react'
-import { motion } from "motion/react"
-import { delay } from 'motion'
+'use client';
 
-const Contact = () => {
+import { useRef, useState } from 'react';
+import { motion, useInView } from 'framer-motion';
+import MagneticButton from './MagneticButton';
 
-    const [result, setResult] = useState("");
+export default function Contact() {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: '-10% 0px' });
+  const [status, setStatus] = useState('idle');
 
-    const onSubmit = async (event) => {
-        event.preventDefault();
-        setResult("Sending....");
-        const formData = new FormData(event.target);
+  const submit = async (e) => {
+    e.preventDefault();
+    setStatus('sending');
+    await new Promise(r => setTimeout(r, 1200));
+    setStatus('sent');
+  };
 
-        formData.append("access_key", "c7290807-35fe-4ac1-9506-1fefe39fb039");
+  return (
+    <section id="contact" ref={ref}
+      className="relative overflow-hidden"
+      data-theme="dark"
+      style={{ backgroundColor: '#1a1a14' }}>
 
-        const response = await fetch("https://api.web3forms.com/submit", {
-            method: "POST",
-            body: formData
-        });
+      {/* Big CTA centered */}
+      <div style={{ minHeight: '70vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '80px 48px', textAlign: 'center' }}>
+        <motion.p initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}}
+          transition={{ duration: 0.6 }}
+          className="text-xs tracking-[0.5em] uppercase font-semibold mb-10"
+          style={{ fontFamily: 'var(--font-syne)', color: '#d4522a' }}>
+          Get In Touch
+        </motion.p>
 
-        const data = await response.json();
+        <div className="overflow-hidden mb-4">
+          <motion.h2 initial={{ y: '105%' }} animate={inView ? { y: '0%' } : {}}
+            transition={{ duration: 1, delay: 0.1, ease: [0.76, 0, 0.24, 1] }}
+            className="font-bold"
+            style={{ fontFamily: 'var(--font-syne)', fontSize: 'clamp(3rem, 8vw, 8rem)', lineHeight: 0.95, color: '#f5f0e8' }}>
+            Let's build
+          </motion.h2>
+        </div>
+        <div className="overflow-hidden mb-16">
+          <motion.h2 initial={{ y: '105%' }} animate={inView ? { y: '0%' } : {}}
+            transition={{ duration: 1, delay: 0.18, ease: [0.76, 0, 0.24, 1] }}
+            className="font-bold italic"
+            style={{ fontFamily: 'var(--font-syne)', fontSize: 'clamp(3rem, 8vw, 8rem)', lineHeight: 0.95, color: '#d4522a' }}>
+            something great.
+          </motion.h2>
+        </div>
 
-        if (data.success) {
-            setResult("Form Submitted Successfully");
-            event.target.reset();
-        } else {
-            console.log("Error", data);
-            setResult(data.message);
-        }
-    };
-
-
-    return (
-        <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 1 }}
-            id='contact' className='w-full px-[12%] py-10 scroll-mt-20 bg-[url("/footer-bg-color.png")] 
-        bg-no-repeat bg-center bg-[length:90%_auto]'>
-            <motion.h4
-                initial={{ opacity: 0, y: -20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-                className="text-center mb-2 text-lg">
-                Connect with me
-            </motion.h4>
-            <motion.h2
-                initial={{ opacity: 0, y: -20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.5 }}
-                className="text-center text-5xl">
-                Get in touch
-            </motion.h2>
-            <motion.p
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.7 }}
-                className="text-center max-w-2xl mx-auto mt-5 mb-12">
-                I'd love to hear from you! If you any questions, comments, or feedback,
-                please use the form below.
-            </motion.p>
-
-            <motion.form
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.9 }}
-                onSubmit={onSubmit} className='max-w-2xl mx-auto'>
-                <div className='grid  grid-cols-1 md:grid-cols-2 gap-6 mt-10 mb-8'>
-                    <motion.input
-                        initial={{ opacity: 0, x: -50 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.6, delay: 1.1 }}
-                        type="text" placeholder='Enter your name' required
-                        className='flex-1 p-3 outline-none border-[0.5px] border-gray-400
-                    rounded-md bg-white' name='name' />
-                    <motion.input
-                        initial={{ opacity: 0, x: 50 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.6, delay: 1.1 }}
-                        type="email" placeholder='Enter your email' required
-                        className='flex-1 p-3 outline-none border-[0.5px] border-gray-400
-                    rounded-md bg-white' name='email' />
-                </div>
-                <motion.textarea
-                    initial={{ opacity: 0, y: 100 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 1.3 }}
-                    name="message" id="" rows='6' placeholder='Enter your message' required
-                    className='w-full p-4 outline-none border-[0.5px] border-gray-400 rounded-md
-                bg-white mb-6'></motion.textarea>
-
-                <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ duration: 0.3 }}
-                    type='submit' className='py-3 px-8 w-max flex items-center justify-between
-                gap-2 bg-black/80 text-white rounded-full mx-auto hover:bg-black duration-500'>Submit now
-                    <Image src={assets.right_arrow_white} alt='' className='w-4' /></motion.button>
-
-                <p className='w-4'>{result}</p>
-            </motion.form>
+        {/* Direct CTA */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.4, duration: 0.7 }}>
+          <MagneticButton strength={0.2}>
+            <a href="mailto:naufalhakim6b@gmail.com"
+              className="inline-flex items-center justify-center rounded-full text-sm font-semibold tracking-[0.15em] uppercase transition-all duration-300 hover:scale-[1.03] whitespace-nowrap"
+              style={{ fontFamily: 'var(--font-syne)', backgroundColor: '#d4522a', color: '#fff', padding: '18px 48px' }}
+              onMouseEnter={e => e.currentTarget.style.backgroundColor = '#b83e1f'}
+              onMouseLeave={e => e.currentTarget.style.backgroundColor = '#d4522a'}>
+              Start a Conversation →
+            </a>
+          </MagneticButton>
         </motion.div>
+      </div>
 
+      {/* Form + links */}
+      <div style={{ padding: '0 48px 120px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '64px', maxWidth: '900px', margin: '0 auto' }} className="lg:grid-cols-2">
 
-    )
+          {/* Form */}
+          <motion.form onSubmit={submit}
+            initial={{ opacity: 0, y: 24 }} animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.5, duration: 0.7 }}
+            className="flex flex-col gap-8">
+            <input type="text" placeholder="Your name" required
+              className="w-full bg-transparent focus:outline-none transition-colors duration-300"
+              style={{ fontFamily: 'var(--font-syne)', color: '#f5f0e8', borderBottom: '1px solid #3a3828', caretColor: '#d4522a', padding: '20px 0', fontSize: '16px' }}
+              onFocus={e => e.target.style.borderBottomColor = '#d4522a'}
+              onBlur={e => e.target.style.borderBottomColor = '#3a3828'} />
+            <input type="email" placeholder="Email address" required
+              className="w-full bg-transparent focus:outline-none transition-colors duration-300"
+              style={{ fontFamily: 'var(--font-syne)', color: '#f5f0e8', borderBottom: '1px solid #3a3828', caretColor: '#d4522a', padding: '20px 0', fontSize: '16px' }}
+              onFocus={e => e.target.style.borderBottomColor = '#d4522a'}
+              onBlur={e => e.target.style.borderBottomColor = '#3a3828'} />
+            <textarea placeholder="Tell me about your project" rows={4} required
+              className="w-full bg-transparent focus:outline-none transition-colors duration-300 resize-none"
+              style={{ fontFamily: 'var(--font-syne)', color: '#f5f0e8', borderBottom: '1px solid #3a3828', caretColor: '#d4522a', padding: '20px 0', fontSize: '16px' }}
+              onFocus={e => e.target.style.borderBottomColor = '#d4522a'}
+              onBlur={e => e.target.style.borderBottomColor = '#3a3828'} />
+            <div className="mt-4">
+              <button type="submit" disabled={status !== 'idle'}
+                className="inline-flex items-center justify-center rounded-full text-sm font-semibold tracking-wider uppercase transition-all duration-300 disabled:opacity-50 whitespace-nowrap hover:scale-[1.02]"
+                style={{ fontFamily: 'var(--font-syne)', backgroundColor: '#d4522a', color: '#fff', padding: '16px 40px' }}
+                onMouseEnter={e => { if (status === 'idle') e.currentTarget.style.backgroundColor = '#b83e1f'; }}
+                onMouseLeave={e => e.currentTarget.style.backgroundColor = '#d4522a'}>
+                {status === 'idle' ? 'Send Message →' : status === 'sending' ? 'Sending…' : 'Sent ✓'}
+              </button>
+            </div>
+          </motion.form>
+
+          {/* Links */}
+          <motion.div initial={{ opacity: 0, y: 24 }} animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.6, duration: 0.7 }}
+            className="flex flex-col justify-center gap-16">
+
+            <div>
+              <p className="text-[10px] tracking-[0.4em] uppercase font-semibold mb-4"
+                style={{ fontFamily: 'var(--font-syne)', color: '#d4522a' }}>Email</p>
+              <a href="mailto:naufalhakim6b@gmail.com"
+                className="text-lg md:text-xl font-medium transition-colors duration-300"
+                style={{ fontFamily: 'var(--font-syne)', color: '#f5f0e8' }}
+                onMouseEnter={e => e.currentTarget.style.color = '#d4522a'}
+                onMouseLeave={e => e.currentTarget.style.color = '#f5f0e8'}>
+                naufalhakim6b@gmail.com
+              </a>
+            </div>
+
+            <div>
+              <p className="text-[10px] tracking-[0.4em] uppercase font-semibold mb-6"
+                style={{ fontFamily: 'var(--font-syne)', color: '#d4522a' }}>Socials</p>
+              <div className="flex flex-col gap-5">
+                {[
+                  { label: 'GitHub', href: 'https://github.com/naufalhakm' },
+                  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/naufalhakm/' },
+                ].map(({ label, href }) => (
+                  <a key={label} href={href} target="_blank" rel="noopener noreferrer"
+                    className="flex items-center justify-between py-5 border-b group/link transition-colors duration-300"
+                    style={{ borderColor: '#2a2a1e' }}
+                    onMouseEnter={e => e.currentTarget.style.borderColor = '#d4522a'}
+                    onMouseLeave={e => e.currentTarget.style.borderColor = '#2a2a1e'}>
+                    <span className="text-base md:text-lg font-semibold"
+                      style={{ fontFamily: 'var(--font-syne)', color: '#f5f0e8' }}>{label}</span>
+                    <span className="text-xl transition-transform duration-300 group-hover/link:translate-x-1 group-hover/link:-translate-y-1"
+                      style={{ color: '#d4522a' }}>↗</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Large BG watermark */}
+      <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 0.03 } : {}}
+        transition={{ delay: 0.8, duration: 1.2 }}
+        className="absolute bottom-0 right-0 font-bold leading-none pointer-events-none select-none"
+        style={{ fontFamily: 'var(--font-syne)', fontSize: 'clamp(12rem, 30vw, 30rem)', color: '#f5f0e8' }}>
+        NH
+      </motion.div>
+    </section>
+  );
 }
-
-export default Contact

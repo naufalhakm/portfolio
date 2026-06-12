@@ -1,27 +1,24 @@
-import { Outfit, Ovo } from "next/font/google";
+import { Syne } from "next/font/google";
 import "./globals.css";
 
-const outfit = Outfit({
+const syne = Syne({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
-
-const ovo = Ovo({
-  subsets: ["latin"],
-  weight: ["400"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-syne",
+  display: "swap",
 });
 
 export const metadata = {
-  title: "Portfolio - Naufal Hakim",
-  description: "",
+  title: "Naufal Hakim — Software Developer",
+  description: "Software engineer specializing in scalable backend systems and AI-powered automation.",
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${outfit.className} ${ovo.className} antialiased leading-8
-        overflow-x-hidden`}
+        className={`${syne.variable} antialiased`}
+        style={{ backgroundColor: '#0a0a0a', color: '#f5f5f5' }}
       >
         {children}
       </body>

@@ -1,92 +1,149 @@
-import { assets, infoList, toolsData } from "@/assets/assets";
-import Image from "next/image";
-import React from "react";
-import { motion } from "motion/react"
+'use client';
 
-const About = () => {
-    return (
-        <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 1 }}
-            id='about' className="w-full px-[12%] py-10 scroll-mt-20">
-            <motion.h4
-                initial={{ opacity: 0, y: -20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, delay: 0.3 }}
-                className="text-center mb-2 text-lg">Introduction</motion.h4>
-            <motion.h2
-                initial={{ opacity: 0, y: -20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, delay: 0.5 }}
-                className="text-center text-5xl">About me</motion.h2>
+import { useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
+import AnimatedCounter from './AnimatedCounter';
+import GrowLine from './GrowLine';
+import Marquee from './Marquee';
 
-            <motion.div
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                transition={{ duration: 0.8 }}
-                className="flex w-full flex-col lg:flex-row items-center
-            gap-20 my-20">
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.6 }}
-                    className="w-64 sm:w-80 rounded-3xl max-w-none">
-                    <Image src={assets.santai} alt="user" className="w-full
-                    rounded-3xl"/>
-                </motion.div>
-
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    transition={{ duration: 0.6, delay: 0.8 }}
-                    className="flex-1">
-                    <p className="mb-10 max-w-2xl">
-                        I’m a passionate Backend Engineer with solid experience in building
-                        and maintaining reliable backend systems. Over the years,
-                        I’ve had the opportunity to collaborate with amazing teams and reputable companies,
-                        helping them grow and succeed through well-structured and scalable solutions.
-                    </p>
-
-                    <motion.ul
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        transition={{ duration: 0.8, delay: 1 }}
-                        className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-2xl">
-                        {infoList.map(({ icon, iconDark, title, description }, index) => (
-                            <motion.li
-                                whileInView={{ opacity: 1.05 }}
-                                className="border-[0.5px] border-gray-400 rounded-xl p-6 cursor-pointer hover:bg-[#fcf4ff]
-                            hover:-translate-y-1 duration-500 hover:shadow-[2px_2px_#000]" key={index}>
-                                <Image src={icon} alt={title} className="w-7 mt-3" />
-                                <h3 className="my-4 font-semibold text-gray-700">{title}</h3>
-                                <p className="text-gray-600 text-sm">{description}</p>
-                            </motion.li>
-                        ))}
-                    </motion.ul>
-
-                    <motion.h4
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 1.3 }}
-                        className="my-6 text-gray-700">Tools I use</motion.h4>
-
-                    <motion.ul
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        transition={{ duration: 0.6, delay: 1.5 }}
-                        className="flex  items-center gap-3 sm:gap-5">
-                        {toolsData.map((tool, index) => (
-                            <motion.li
-                                className="flex items-center justify-center w-12 sm:w-14 aspect-square border border-gray-400 rounded-lg cursor-pointer hover:-translate-y-1 duration-500" key={index}>
-                                <Image src={tool} alt="Tool" className="w-5 sm:w-7" />
-                            </motion.li>
-                        ))}
-                    </motion.ul>
-                </motion.div>
-            </motion.div>
-        </motion.div>
-    )
+function RevealLine({ children, delay = 0 }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: '-10% 0px' });
+  return (
+    <div ref={ref} className="overflow-hidden">
+      <motion.div initial={{ y: '105%' }} animate={inView ? { y: '0%' } : {}}
+        transition={{ duration: 0.85, delay, ease: [0.76, 0, 0.24, 1] }}>
+        {children}
+      </motion.div>
+    </div>
+  );
 }
 
-export default About
+function FadeUp({ children, delay = 0 }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: '-6% 0px' });
+  return (
+    <motion.div ref={ref} initial={{ opacity: 0, y: 24 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.7, delay, ease: [0.25, 0.46, 0.45, 0.94] }}>
+      {children}
+    </motion.div>
+  );
+}
+
+const infoList = [
+  { title: 'Languages', description: 'Golang · PHP · Python · JavaScript · SQL · C++ · GraphQL' },
+  { title: 'Education', description: 'Computer Science — Binus University (GPA 3.88/4.0)\nComputer Engineering — IPB University (GPA 3.51/4.0)' },
+  { title: 'Experience', description: '4+ years · HW Group & Arkademi\nBuilding scalable backend systems & AI-powered automation' },
+];
+
+const tools = ['Docker', 'AWS', 'GCP', 'Firebase', 'RabbitMQ', 'Redis', 'PostgreSQL', 'MongoDB', 'gRPC'];
+
+export default function About() {
+  return (
+    <section id="about" style={{ backgroundColor: '#eee9de' }}>
+
+      {/* Intro — centered */}
+      <div style={{ padding: '120px 48px 80px', textAlign: 'center' }}>
+        <FadeUp>
+          <p style={{ fontFamily: 'var(--font-syne)', color: '#d4522a', marginBottom: '24px', fontSize: '12px', letterSpacing: '0.4em', textTransform: 'uppercase', fontWeight: 600 }}>
+            About Me
+          </p>
+        </FadeUp>
+
+        <h2 style={{ fontFamily: 'var(--font-syne)', fontSize: 'clamp(2.2rem, 5vw, 5rem)', lineHeight: 1.05, color: '#1a1a14', fontWeight: 700 }}>
+          <RevealLine delay={0}>I build systems</RevealLine>
+          <RevealLine delay={0.08}>
+            <span style={{ color: '#d4522a' }}>that scale.</span>
+          </RevealLine>
+        </h2>
+
+        <FadeUp delay={0.2}>
+          <p style={{ fontFamily: 'var(--font-syne)', color: '#6b6554', fontSize: '18px', lineHeight: 1.8, maxWidth: '640px', margin: '40px auto 0' }}>
+            Software engineer specializing in scalable backend systems and AI-powered automation. From slashing operational costs by 97% with AI agents to handling 60K+ concurrent uploads — I build systems that perform under pressure.
+          </p>
+        </FadeUp>
+      </div>
+
+      {/* Stats strip */}
+      <div style={{ backgroundColor: '#ddd8cc', padding: '56px 48px' }}>
+        <FadeUp>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '32px', maxWidth: '700px', margin: '0 auto', textAlign: 'center' }}>
+            {[
+              { n: '4', suffix: '+', label: 'Years Exp.' },
+              { n: '10', suffix: '+', label: 'Projects' },
+              { n: '97', suffix: '%', label: 'Cost Reduction' },
+            ].map(({ n, suffix, label }) => (
+              <div key={label}>
+                <p style={{ fontFamily: 'var(--font-syne)', fontSize: 'clamp(2rem, 3.5vw, 3.5rem)', fontWeight: 700, color: '#d4522a', lineHeight: 1 }}>
+                  <AnimatedCounter target={n} suffix={suffix} duration={1800} />
+                </p>
+                <p style={{ fontFamily: 'var(--font-syne)', fontSize: '11px', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#6b6554', marginTop: '12px' }}>{label}</p>
+              </div>
+            ))}
+          </div>
+        </FadeUp>
+      </div>
+
+      {/* Marquee — skills ticker */}
+      <div data-theme="dark" style={{ backgroundColor: '#1a1a14' }}>
+        <Marquee
+          items={['Golang', 'Laravel', 'Python', 'AI Agents', 'Microservices', 'Docker', 'AWS', 'PostgreSQL', 'gRPC', 'Redis']}
+          speed={35}
+          dark
+        />
+      </div>
+
+      {/* Details grid */}
+      <div style={{ padding: '80px 48px 120px' }}>
+        <GrowLine color="#d8d2c4" height={1} />
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '64px', maxWidth: '1000px', margin: '48px auto 0' }} className="lg:grid-cols-2">
+
+          {/* Left — Language/Edu/Experience cards with CLEAR spacing */}
+          <div>
+            {infoList.map(({ title, description }, i) => (
+              <FadeUp key={title} delay={0.08 * i}>
+                <div style={{ padding: '32px 0', borderBottom: '1px solid #d8d2c4' }}>
+                  <p style={{ fontFamily: 'var(--font-syne)', color: '#d4522a', fontSize: '11px', letterSpacing: '0.35em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '12px' }}>{title}</p>
+                  <p style={{ fontFamily: 'var(--font-syne)', color: '#1a1a14', fontSize: '16px', lineHeight: 1.8, whiteSpace: 'pre-line' }}>{description}</p>
+                </div>
+              </FadeUp>
+            ))}
+          </div>
+
+          {/* Right — Tools + Resume */}
+          <div>
+            <FadeUp delay={0.15}>
+              <p style={{ fontFamily: 'var(--font-syne)', color: '#d4522a', fontSize: '11px', letterSpacing: '0.35em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '24px' }}>
+                Tools & Stack
+              </p>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+                {tools.map(t => (
+                  <span key={t}
+                    className="transition-all duration-300"
+                    style={{ fontFamily: 'var(--font-syne)', color: '#1a1a14', border: '1.5px solid #1a1a14', borderRadius: '999px', padding: '10px 24px', fontSize: '12px', letterSpacing: '0.05em', textTransform: 'uppercase', fontWeight: 500, display: 'inline-flex', alignItems: 'center', cursor: 'default' }}
+                    onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#1a1a14'; e.currentTarget.style.color = '#f5f0e8'; }}
+                    onMouseLeave={e => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = '#1a1a14'; }}>
+                    {t}
+                  </span>
+                ))}
+              </div>
+            </FadeUp>
+
+            <FadeUp delay={0.3}>
+              <div style={{ marginTop: '56px' }}>
+                <a href="/Naufal_Hakim_Software_Developer.pdf" target="_blank" rel="noopener noreferrer"
+                  className="transition-all duration-300 hover:scale-[1.02]"
+                  style={{ fontFamily: 'var(--font-syne)', backgroundColor: '#1a1a14', color: '#f5f0e8', borderRadius: '999px', padding: '16px 40px', fontSize: '14px', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '8px' }}
+                  onMouseEnter={e => e.currentTarget.style.backgroundColor = '#d4522a'}
+                  onMouseLeave={e => e.currentTarget.style.backgroundColor = '#1a1a14'}>
+                  Download Resume ↓
+                </a>
+              </div>
+            </FadeUp>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

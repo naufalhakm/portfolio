@@ -1,11 +1,58 @@
 @import "tailwindcss";
 
-* {
-  font-family: Ovo;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-@layer utilities {
-  .backdrop-blur-lg {
-    backdrop-filter: blur(16px);
-  }
+:root {
+  --bg:          #f5f0e8;   /* warm cream — main bg */
+  --bg-alt:      #eee9de;   /* slightly darker cream for alternating sections */
+  --bg-dark:     #1a1a14;   /* deep charcoal for dark sections */
+  --text:        #1a1a14;   /* near-black */
+  --text-muted:  #6b6554;   /* warm mid-gray */
+  --text-light:  #a09880;   /* light warm gray */
+  --accent:      #d4522a;   /* burnt orange — the "pop" color */
+  --accent-alt:  #e8b84b;   /* warm gold secondary */
+  --border:      #d8d2c4;   /* warm light border */
+  --border-dark: #2a2a1e;   /* dark section border */
+}
+
+html {
+  background-color: var(--bg);
+  color: var(--text);
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+* { cursor: none !important; }
+
+::-webkit-scrollbar { width: 0px; display: none; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: transparent; }
+
+/* Firefox */
+html { scrollbar-width: none; }
+
+/* IE/Edge */
+body { -ms-overflow-style: none; }
+
+::selection {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* Form placeholder visibility on dark bg */
+::placeholder {
+  color: #6b6554 !important;
+  opacity: 1;
 }
